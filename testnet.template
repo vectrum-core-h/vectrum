@@ -21,10 +21,10 @@ fi
 
 bioscurrencysymbol=$BIOS_CURRENCY_SYMBOL
 if [ -z "$bioscurrencysymbol" ]; then
-    bioscurrencysymbol="SYS"
+    bioscurrencysymbol="VTM"
 fi
 
-wddir=eosio-ignition-wd
+wddir=vectrum-ignition-wd
 wdaddr=localhost:8899
 wdurl=http://$wdaddr
 # Manual deployers, add a line below this block that looks like:
@@ -33,7 +33,7 @@ wdurl=http://$wdaddr
 #    cnt_dir=$CONTRACT_DIR
 #    sys=$SYS_CONTRACT
 # where $BIOS_HOSTNAME is replaced by the hostname portion of the http-server-address configured
-# for the nodeos instance running to bios producer
+# for the vectrum-node instance running to bios producer
 # ------ DO NOT ALTER THE NEXT LINE -------
 ###INSERT envars
 
@@ -51,16 +51,16 @@ echo "FEATURE_DIGESTS: $FEATURE_DIGESTS" >> $logfile
 
 echo "http-server-address = $wdaddr" > $wddir/config.ini
 
-programs/keosd/keosd --config-dir $wddir --data-dir $wddir --http-max-response-time-ms 99999 2> $wddir/wdlog.txt &
+programs/wallet/vectrum-wallet --config-dir $wddir --data-dir $wddir --http-max-response-time-ms 99999 2> $wddir/wdlog.txt &
 echo $$ > ignition_wallet.pid
-echo keosd log in $wddir/wdlog.txt >> $logfile
+echo vectrum-wallet log in $wddir/wdlog.txt >> $logfile
 sleep 1
 
 ecmd () {
     echo ===== Start: $step ============ >> $logfile
-    echo executing: cleos --wallet-url $wdurl --url http://$bioshost:$biosport $* | tee -a $logfile
+    echo executing: vectrum-cli --wallet-url $wdurl --url http://$bioshost:$biosport $* | tee -a $logfile
     echo ----------------------- >> $logfile
-    programs/cleos/cleos  --wallet-url $wdurl --url http://$bioshost:$biosport $* >> $logfile 2>&1
+    programs/cli/vectrum-cli  --wallet-url $wdurl --url http://$bioshost:$biosport $* >> $logfile 2>&1
     echo ==== End: $step ============== >> $logfile
     step=$(($step + 1))
 }
@@ -70,7 +70,7 @@ wcmd () {
 }
 
 cacmd () {
-    programs/cleos/cleos  --wallet-url $wdurl --url http://$bioshost:$biosport system newaccount --transfer --stake-net "10000000.0000 "$bioscurrencysymbol --stake-cpu "10000000.0000 "$bioscurrencysymbol  --buy-ram "10000000.0000 "$bioscurrencysymbol eosio $* >> $logfile 2>&1
+    programs/cli/vectrum-cli  --wallet-url $wdurl --url http://$bioshost:$biosport system newaccount --transfer --stake-net "10000000.0000 "$bioscurrencysymbol --stake-cpu "10000000.0000 "$bioscurrencysymbol  --buy-ram "10000000.0000 "$bioscurrencysymbol eosio $* >> $logfile 2>&1
     ecmd system regproducer $1 $2
     ecmd system voteproducer prods $1 $1
 }
@@ -114,22 +114,25 @@ ecmd create account eosio eosio.stake $pubsyskey $pubsyskey
 ecmd create account eosio eosio.token $pubsyskey $pubsyskey
 ecmd create account eosio eosio.vpay $pubsyskey $pubsyskey
 ecmd create account eosio eosio.wrap $pubsyskey $pubsyskey
+# vectrum accounts
+ecmd create account eosio vectrum $pubsyskey $pubsyskey
+ecmd create account eosio vectrumgroup $pubsyskey $pubsyskey
 
 ecmd set contract eosio.token unittests/contracts/eosio.token eosio.token.wasm eosio.token.abi
 ecmd set contract eosio.msig unittests/contracts/eosio.msig eosio.msig.wasm eosio.msig.abi
 ecmd set contract eosio.wrap unittests/contracts/eosio.wrap eosio.wrap.wasm eosio.wrap.abi
 
 echo ===== Start: $step ============ >> $logfile
-echo executing: cleos --wallet-url $wdurl --url http://$bioshost:$biosport push action eosio.token create '[ "eosio", "10000000000.0000 '$bioscurrencysymbol'" ]' -p eosio.token | tee -a $logfile
-echo executing: cleos --wallet-url $wdurl --url http://$bioshost:$biosport push action eosio.token issue '[ "eosio", "1000000000.0000 '$bioscurrencysymbol'", "memo" ]' -p eosio | tee -a $logfile
+echo executing: vectrum-cli --wallet-url $wdurl --url http://$bioshost:$biosport push action eosio.token create '[ "eosio", "10000000000.0000 '$bioscurrencysymbol'" ]' -p eosio.token | tee -a $logfile
+echo executing: vectrum-cli --wallet-url $wdurl --url http://$bioshost:$biosport push action eosio.token issue '[ "eosio", "1000000000.0000 '$bioscurrencysymbol'", "memo" ]' -p eosio | tee -a $logfile
 echo ----------------------- >> $logfile
-programs/cleos/cleos --wallet-url $wdurl --url http://$bioshost:$biosport push action eosio.token create '[ "eosio", "10000000000.0000 '$bioscurrencysymbol'" ]' -p eosio.token >> $logfile 2>&1
-programs/cleos/cleos --wallet-url $wdurl --url http://$bioshost:$biosport push action eosio.token issue '[ "eosio", "1000000000.0000 '$bioscurrencysymbol'", "memo" ]' -p eosio >> $logfile 2>&1
+programs/cli/vectrum-cli --wallet-url $wdurl --url http://$bioshost:$biosport push action eosio.token create '[ "eosio", "10000000000.0000 '$bioscurrencysymbol'" ]' -p eosio.token >> $logfile 2>&1
+programs/cli/vectrum-cli --wallet-url $wdurl --url http://$bioshost:$biosport push action eosio.token issue '[ "eosio", "1000000000.0000 '$bioscurrencysymbol'", "memo" ]' -p eosio >> $logfile 2>&1
 echo ==== End: $step ============== >> $logfile
 step=$(($step + 1))
 
 ecmd set contract eosio unittests/contracts/eosio.system eosio.system.wasm eosio.system.abi
-programs/cleos/cleos --wallet-url $wdurl --url http://$bioshost:$biosport push action eosio init '[0, "4,'$bioscurrencysymbol'"]' -p eosio >> $logfile 2>&1
+programs/cli/vectrum-cli --wallet-url $wdurl --url http://$bioshost:$biosport push action eosio init '[0, "4,'$bioscurrencysymbol'"]' -p eosio >> $logfile 2>&1
 
 # Manual deployers, add a series of lines below this block that looks like:
 #    cacmd $PRODNAME[0] $OWNERKEY[0] $ACTIVEKEY[0]
@@ -141,4 +144,4 @@ programs/cleos/cleos --wallet-url $wdurl --url http://$bioshost:$biosport push a
 # ------ DO NOT ALTER THE NEXT LINE -------
 ###INSERT cacmd
 
-pkill -15 keosd
+pkill -15 vectrum-wallet

@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 load helpers/general
-export SCRIPT_LOCATION="scripts/eosio_build.sh"
-export TEST_LABEL="[eosio_build_amazonlinux]"
+export SCRIPT_LOCATION="scripts/build.sh"
+export TEST_LABEL="[vectrum_build_amazonlinux]"
 
 [[ $ARCH == "Linux" ]] || exit 0 # Skip if we're not on linux
 ( [[ $NAME == "Amazon Linux AMI" ]] || [[ $NAME == "Amazon Linux" ]] ) || exit 0 # Exit 0 is required for pipeline
@@ -19,7 +19,7 @@ export TEST_LABEL="[eosio_build_amazonlinux]"
 # Testing MongoDB
 ./tests/bash-bats/modules/mongodb.sh
 
-## Needed to load eosio_build_ files properly; it can be empty
+## Needed to load vectrum_build_ files properly; it can be empty
 @test "${TEST_LABEL} > General" {
     set_system_vars # Obtain current machine's resources and set the necessary variables (like JOBS, etc)
 
@@ -27,7 +27,7 @@ export TEST_LABEL="[eosio_build_amazonlinux]"
     [[ ! -z $(echo "${output}" | grep "Executing: make -j${JOBS}") ]] || exit
     ### Make sure deps are loaded properly
     [[ ! -z $(echo "${output}" | grep "Executing: cd /NEWPATH/src") ]] || exit
-    [[ ! -z $(echo "${output}" | grep "Starting EOSIO Dependency Install") ]] || exit
+    [[ ! -z $(echo "${output}" | grep "Starting VECTRUM Dependency Install") ]] || exit
     [[ ! -z $(echo "${output}" | grep "Executing: eval /usr/bin/yum -y update") ]] || exit
     if [[ $NAME == "Amazon Linux" ]]; then
         [[ ! -z $(echo "${output}" | grep "libstdc++") ]] || exit
@@ -37,7 +37,7 @@ export TEST_LABEL="[eosio_build_amazonlinux]"
     [[ ! -z $(echo "${output}" | grep "sudo.*NOT.*found") ]] || exit
     [[ -z $(echo "${output}" | grep "-   NOT found.") ]] || exit
     [[ ! -z $(echo "${output}" | grep /NEWPATH*/src/boost) ]] || exit
-    [[ ! -z $(echo "${output}" | grep "Starting EOSIO Build") ]] || exit
+    [[ ! -z $(echo "${output}" | grep "Starting VECTRUM Build") ]] || exit
     [[ ! -z $(echo "${output}" | grep "make -j${CPU_CORES}") ]] || exit
     [[ -z $(echo "${output}" | grep "MongoDB C++ driver successfully installed") ]] || exit # Mongo is off
     # Ensure PIN_COMPILER=false uses proper flags for the various installs

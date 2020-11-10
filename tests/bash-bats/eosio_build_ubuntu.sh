@@ -1,8 +1,8 @@
 #!/usr/bin/env bats
 load helpers/general
 
-export SCRIPT_LOCATION="scripts/eosio_build.sh"
-export TEST_LABEL="[eosio_build_ubuntu]"
+export SCRIPT_LOCATION="scripts/build.sh"
+export TEST_LABEL="[vectrum_build_ubuntu]"
 
 [[ $ARCH == "Linux" ]] || exit 0 # Exit 0 is required for pipeline
 [[ $NAME == "Ubuntu" ]] || exit 0 # Exit 0 is required for pipeline
@@ -21,14 +21,14 @@ export TEST_LABEL="[eosio_build_ubuntu]"
 # Testing MongoDB
 ./tests/bash-bats/modules/mongodb.sh
 
-## Needed to load eosio_build_ files properly; it can be empty
+## Needed to load vectrum_build_ files properly; it can be empty
 @test "${TEST_LABEL} > General" {
     set_system_vars # Obtain current machine's resources and set the necessary variables (like JOBS, etc)
 
     [[ "$(echo ${VERSION_ID})" == "16.04" ]] && install-package build-essential WETRUN 1>/dev/null || install-package clang WETRUN 1>/dev/null
     run bash -c "printf \"y\n%.0s\" {1..100} | ./$SCRIPT_LOCATION -i /NEWPATH"
     [[ ! -z $(echo "${output}" | grep "Executing: make -j${JOBS}") ]] || exit
-    [[ ! -z $(echo "${output}" | grep "Starting EOSIO Dependency Install") ]] || exit
+    [[ ! -z $(echo "${output}" | grep "Starting VECTRUM Dependency Install") ]] || exit
     [[ ! -z $(echo "${output}" | grep python.*) ]] || exit
     [[ ! -z $(echo "${output}" | grep make.*NOT.*found) ]] || exit
     [[ ! -z $(echo "${output}" | grep /NEWPATH.*/src/boost) ]] || exit
@@ -39,6 +39,6 @@ export TEST_LABEL="[eosio_build_ubuntu]"
     fi
     [[ -z $(echo "${output}" | grep "-   NOT found") ]] || exit
     [[ -z $(echo "${output}" | grep lcov.*found) ]] || exit
-    [[ ! -z $(echo "${output}" | grep "EOSIO has been successfully built") ]] || exit
+    [[ ! -z $(echo "${output}" | grep "VECTRUM has been successfully built") ]] || exit
     [[ "$(echo ${VERSION_ID})" == "16.04" ]] && apt autoremove build-essential -y || uninstall-package clang WETRUN
 }

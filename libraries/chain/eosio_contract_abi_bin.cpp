@@ -1,8 +1,8 @@
 namespace eosio { namespace chain {
 
-// Initial value for eosio ABI. This value affects consensus; if different
-// nodeos versions have different versions of the initial eosio ABI, then
-// they could potentially fork. See https://github.com/EOSIO/eos/issues/7794
+// Initial value for VECTRUM ABI. This value affects consensus; if different
+// vectrum-node versions have different versions of the initial VECTRUM ABI, then
+// they could potentially fork.
 //
 // This is a capture of the ABI produced by versions 1.7 and 1.8.
 

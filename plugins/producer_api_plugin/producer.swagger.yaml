@@ -6,9 +6,9 @@ info:
     name: MIT
     url: https://opensource.org/licenses/MIT
   contact:
-    url: https://eos.io
+    url: https://vectrum.group
 tags:
-  - name: eosio
+  - name: vectrum
 servers:
   - url: "{protocol}://{host}:{port}/v1/"
     variables:

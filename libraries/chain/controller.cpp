@@ -1002,8 +1002,6 @@ struct controller_impl {
          a.creation_date = initial_timestamp;
 
          if( name == config::system_account_name ) {
-            // The initial eosio ABI value affects consensus; see  https://github.com/EOSIO/eos/issues/7794
-            // TODO: This doesn't charge RAM; a fix requires a consensus upgrade.
             a.abi.resize(sizeof(eosio_abi_bin));
             memcpy(a.abi.data(), eosio_abi_bin, sizeof(eosio_abi_bin));
          }
@@ -2530,7 +2528,7 @@ void controller::preactivate_feature( const digest_type& feature_digest ) {
    // But it is still possible for a producer to retire a deferred transaction that deals with this subjective
    // information. If they recognized the feature, they would retire it successfully, but a validator that
    // does not recognize the feature should reject the entire block (not just fail the deferred transaction).
-   // Even if they don't recognize the feature, the producer could change their nodeos code to treat it like an
+   // Even if they don't recognize the feature, the producer could change their vectrum-node code to treat it like an
    // objective failure thus leading the deferred transaction to retire with soft_fail or hard_fail.
    // In this case, validators that don't recognize the feature would reject the whole block immediately, and
    // validators that do recognize the feature would likely lead to a different retire status which would

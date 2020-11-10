@@ -81,11 +81,11 @@ namespace eosio { namespace chain {
             cd = my->eosvmoc->cc.get_descriptor_for_code(code_hash, vm_version);
          }
          catch(...) {
-            //swallow errors here, if EOS VM OC has gone in to the weeds we shouldn't bail: continue to try and run baseline
-            //In the future, consider moving bits of EOS VM that can fire exceptions and such out of this call path
+            //swallow errors here, if VECTRUM VM OC has gone in to the weeds we shouldn't bail: continue to try and run baseline
+            //In the future, consider moving bits of VECTRUM VM that can fire exceptions and such out of this call path
             static bool once_is_enough;
             if(!once_is_enough)
-               elog("EOS VM OC has encountered an unexpected failure");
+               elog("VECTRUM VM OC has encountered an unexpected failure");
             once_is_enough = true;
          }
          if(cd) {
@@ -1796,9 +1796,6 @@ class compiler_builtins : public context_aware_api {
 };
 
 
-/*
- * This api will be removed with fix for `eos #2561`
- */
 class call_depth_api : public context_aware_api {
    public:
       call_depth_api( apply_context& ctx )

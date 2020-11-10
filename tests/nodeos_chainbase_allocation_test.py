@@ -13,7 +13,7 @@ import os
 import filecmp
 
 ###############################################################
-# nodeos_chainbase_allocation_test
+# node_chainbase_allocation_test
 #
 # Test snapshot creation and restarting from snapshot
 #
@@ -25,7 +25,7 @@ Utils.Debug = args.v
 killAll=args.clean_run
 dumpErrorDetails=args.dump_error_details
 dontKill=args.leave_running
-killEosInstances=not dontKill
+killInstances=not dontKill
 killWallet=not dontKill
 keepLogs=args.keep_logs
 
@@ -57,7 +57,7 @@ try:
         totalNodes=2,
         useBiosBootFile=False,
         loadSystemContract=False,
-        specificExtraNodeosArgs={
+        specificExtraNodeArgs={
             1:"--read-mode irreversible --plugin eosio::producer_api_plugin"})
 
     producerNodeId = 0
@@ -68,7 +68,7 @@ try:
     # Create delayed transaction to create "generated_transaction_object"
     cmd = "create account -j eosio sample EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV\
          EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV --delay-sec 600 -p eosio"
-    trans = producerNode.processCleosCmd(cmd, cmd, silentErrors=False)
+    trans = producerNode.processCliCmd(cmd, cmd, silentErrors=False)
     assert trans
 
     # Schedule a new producer to trigger new producer schedule for "global_property_object"
@@ -81,7 +81,7 @@ try:
     setProdsStr += '{"producer_name":' + newProducerAcc.name + ',"block_signing_key":' + newProducerAcc.activePublicKey + '}'
     setProdsStr += ']}'
     cmd="push action -j eosio setprods '{}' -p eosio".format(setProdsStr)
-    trans = producerNode.processCleosCmd(cmd, cmd, silentErrors=False)
+    trans = producerNode.processCliCmd(cmd, cmd, silentErrors=False)
     assert trans
     setProdsBlockNum = int(trans["processed"]["block_num"])
 
@@ -110,7 +110,7 @@ try:
 
     testSuccessful = True
 finally:
-    TestHelper.shutdown(cluster, walletMgr, testSuccessful, killEosInstances, killWallet, keepLogs, killAll, dumpErrorDetails)
+    TestHelper.shutdown(cluster, walletMgr, testSuccessful, killInstances, killWallet, keepLogs, killAll, dumpErrorDetails)
 
 exitCode = 0 if testSuccessful else 1
 exit(exitCode)

@@ -8,10 +8,10 @@
 #include <eosio/chain/apply_context.hpp>
 #include <softfloat_types.h>
 
-//eos-vm includes
+//vectrum-vm includes
 #include <eosio/vm/backend.hpp>
 
-// eosio specific specializations
+// VECTRUM specific specializations
 namespace eosio { namespace vm {
 
    template<>

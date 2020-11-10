@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  ubuntu:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: cp -r /vectrum/build/packages /tmp
+    volumes:
+      - ./data:/tmp/packages

@@ -14,9 +14,9 @@ import math
 import re
 
 ###############################################################
-# nodeos_under_min_avail_ram
+# node_under_min_avail_ram
 #
-# Sets up 4 producing nodes using --chain-state-db-guard-size-mb and --chain-state-db-size-mb to verify that nodeos will
+# Sets up 4 producing nodes using --chain-state-db-guard-size-mb and --chain-state-db-size-mb to verify that vectrum-node will
 # shutdown safely when --chain-state-db-guard-size-mb is reached and restarts the shutdown nodes, with a higher
 # --chain-state-db-size-mb size, to verify that the node can restart and continue till the guard is reached again. The
 # test both verifies all nodes going down and 1 node at a time.
@@ -71,11 +71,11 @@ walletPort=args.wallet_port
 
 walletMgr=WalletMgr(True, port=walletPort)
 testSuccessful=False
-killEosInstances=not dontKill
+killInstances=not dontKill
 killWallet=not dontKill
 
-WalletdName=Utils.EosWalletName
-ClientName="cleos"
+WalletdName=Utils.WalletName
+CliName="vectrum-cli"
 
 try:
     TestHelper.printSystemInfo("BEGIN")
@@ -88,10 +88,10 @@ try:
     minRAMValue=1002
     maxRAMFlag="--chain-state-db-size-mb"
     maxRAMValue=1010
-    extraNodeosArgs=" %s %d %s %d  --http-max-response-time-ms 990000 " % (minRAMFlag, minRAMValue, maxRAMFlag, maxRAMValue)
-    if cluster.launch(onlyBios=False, pnodes=totalNodes, totalNodes=totalNodes, totalProducers=totalNodes, extraNodeosArgs=extraNodeosArgs, useBiosBootFile=False) is False:
+    extraNodeArgs=" %s %d %s %d  --http-max-response-time-ms 990000 " % (minRAMFlag, minRAMValue, maxRAMFlag, maxRAMValue)
+    if cluster.launch(onlyBios=False, pnodes=totalNodes, totalNodes=totalNodes, totalProducers=totalNodes, extraNodeArgs=extraNodeArgs, useBiosBootFile=False) is False:
         Utils.cmdError("launcher")
-        errorExit("Failed to stand up eos cluster.")
+        errorExit("Failed to stand up VECTRUM cluster.")
 
     Print("Validating system accounts after bootstrap")
     cluster.validateAccounts(None)
@@ -146,7 +146,7 @@ try:
     Print("Publish contract")
     trans=nodes[0].publishContract(contractAccount.name, contractDir, wasmFile, abiFile, waitForTransBlock=True)
     if trans is None:
-        Utils.cmdError("%s set contract %s" % (ClientName, contractAccount.name))
+        Utils.cmdError("%s set contract %s" % (CliName, contractAccount.name))
         errorExit("Failed to publish contract.")
 
     contract=contractAccount.name
@@ -172,7 +172,7 @@ try:
                 if trans is None or not trans[0]:
                     timeOutCount+=1
                     if timeOutCount>=3:
-                        Print("Failed to push create action to eosio contract for %d consecutive times, looks like nodeos already exited." % (timeOutCount))
+                        Print("Failed to push create action to eosio contract for %d consecutive times, looks like vectrum-node already exited." % (timeOutCount))
                         keepProcessing=False
                         break
 
@@ -189,7 +189,7 @@ try:
     #spread the actions to all accounts, to use each accounts tps bandwidth
     fromIndexStart=fromIndex+1 if fromIndex+1<namedAccounts.numAccounts else 0
 
-    # min and max are subjective, just assigned to make sure that many small changes in nodeos don't 
+    # min and max are subjective, just assigned to make sure that many small changes in vectrum-node don't 
     # result in the test not correctly validating behavior
     if count < 5 or count > 20:
         strMsg="little" if count < 20 else "much"
@@ -343,6 +343,6 @@ try:
 
     testSuccessful=True
 finally:
-    TestHelper.shutdown(cluster, walletMgr, testSuccessful=testSuccessful, killEosInstances=killEosInstances, killWallet=killWallet, keepLogs=keepLogs, cleanRun=killAll, dumpErrorDetails=dumpErrorDetails)
+    TestHelper.shutdown(cluster, walletMgr, testSuccessful=testSuccessful, killInstances=killInstances, killWallet=killWallet, keepLogs=keepLogs, cleanRun=killAll, dumpErrorDetails=dumpErrorDetails)
 
 exit(0)

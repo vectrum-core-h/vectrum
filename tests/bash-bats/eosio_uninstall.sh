@@ -1,8 +1,8 @@
 #!/usr/bin/env bats
 load helpers/general
 
-SCRIPT_LOCATION="scripts/eosio_uninstall.sh"
-TEST_LABEL="[eosio_uninstall]"
+SCRIPT_LOCATION="scripts/uninstall.sh"
+TEST_LABEL="[vectrum_uninstall]"
 
 mkdir -p $SRC_DIR
 mkdir -p $OPT_DIR
@@ -22,10 +22,10 @@ mkdir -p $MONGODB_DATA_DIR
   ( [[ "${lines[${#lines[@]}-1]}" == "Please type 'y' for yes or 'n' for no." ]] && [[ "${lines[${#lines[@]}-2]}" == "Please type 'y' for yes or 'n' for no." ]] ) || exit
   ## All yes pass
   run bash -c "printf \"y\n%.0s\" {1..100} | ./$SCRIPT_LOCATION"
-  [[ $output =~ " - EOSIO Removal Complete" ]] || exit
+  [[ $output =~ " - VECTRUM Removal Complete" ]] || exit
   ## First no shows "Cancelled..."
   run bash -c "echo \"n\" | ./$SCRIPT_LOCATION"
-  [[ "${output##*$'\n'}" =~ "Cancelled EOSIO Removal!" ]] || exit
+  [[ "${output##*$'\n'}" =~ "Cancelled VECTRUM Removal!" ]] || exit
   ## What would you like to do?"
   run bash -c "echo \"\" | ./$SCRIPT_LOCATION"
   [[ "${output##*$'\n'}" =~ "What would you like to do?" ]] || exit
@@ -46,20 +46,20 @@ mkdir -p $MONGODB_DATA_DIR
 
 @test "${TEST_LABEL} > -y" {
   run ./$SCRIPT_LOCATION -y
-  [[ $output =~ " - EOSIO Removal Complete" ]] || exit
+  [[ $output =~ " - VECTRUM Removal Complete" ]] || exit
 }
 
 @test "${TEST_LABEL} > -i" {
-  run ./$SCRIPT_LOCATION -y -i eosiotest
-  [[ $output =~ .*/eosiotest ]] || exit
-  ([[ ! $output =~ "Library/Application\ Support/eosio" ]] && [[ ! $output =~ ".local/share/eosio" ]]) || exit
-  [[ ! $output =~ "EOSIO Removal Complete" ]] || exit
+  run ./$SCRIPT_LOCATION -y -i vectrumtest
+  [[ $output =~ .*/vectrumtest ]] || exit
+  ([[ ! $output =~ "Library/Application\ Support/vectrum" ]] && [[ ! $output =~ ".local/share/vectrum" ]]) || exit
+  [[ ! $output =~ "VECTRUM Removal Complete" ]] || exit
 }
 
 @test "${TEST_LABEL} > -f" {
   run bash -c "printf \"y\n%.0s\" {1..100} | ./$SCRIPT_LOCATION -f"
-  ([[ "${output[*]}" =~ "Library/Application\ Support/eosio" ]] && [[ "${output[*]}" =~ ".local/share/eosio" ]]) && exit
-  [[ $output =~ "EOSIO Removal Complete" ]] || exit
+  ([[ "${output[*]}" =~ "Library/Application\ Support/vectrum" ]] && [[ "${output[*]}" =~ ".local/share/vectrum" ]]) && exit
+  [[ $output =~ "VECTRUM Removal Complete" ]] || exit
 }
 
 rm -rf $SRC_DIR

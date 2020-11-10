@@ -1,0 +1,10 @@
+data/
+bulder/
+dev/
+packages/
+Dockerfile*
+docker-compose*
+.dockerignore
+.gitignore
+.env
+README.md

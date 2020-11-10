@@ -11,9 +11,9 @@ import decimal
 import re
 
 ###############################################################
-# nodeos_run_test
+# node_run_test
 #
-# General test that tests a wide range of general use actions around nodeos and keosd
+# General test that tests a wide range of general use actions around vectrum-node and vectrum-wallet
 #
 ###############################################################
 
@@ -46,12 +46,12 @@ localTest=True if server == TestHelper.LOCAL_HOST else False
 cluster=Cluster(host=server, port=port, walletd=True, enableMongo=enableMongo, defproduceraPrvtKey=defproduceraPrvtKey, defproducerbPrvtKey=defproducerbPrvtKey)
 walletMgr=WalletMgr(True, port=walletPort)
 testSuccessful=False
-killEosInstances=not dontKill
+killInstances=not dontKill
 killWallet=not dontKill
 dontBootstrap=sanityTest # intent is to limit the scope of the sanity test to just verifying that nodes can be started
 
-WalletdName=Utils.EosWalletName
-ClientName="cleos"
+WalletdName=Utils.WalletName
+CliName="vectrum-cli"
 timeout = .5 * 12 * 2 + 60 # time for finalization with 1 producer + 60 seconds padding
 Utils.setIrreversibleTimeout(timeout)
 
@@ -70,18 +70,18 @@ try:
         Print("Stand up cluster")
         if cluster.launch(prodCount=prodCount, onlyBios=onlyBios, dontBootstrap=dontBootstrap) is False:
             cmdError("launcher")
-            errorExit("Failed to stand up eos cluster.")
+            errorExit("Failed to stand up VECTRUM cluster.")
     else:
         Print("Collecting cluster info.")
         cluster.initializeNodes(defproduceraPrvtKey=defproduceraPrvtKey, defproducerbPrvtKey=defproducerbPrvtKey)
-        killEosInstances=False
+        killInstances=False
         Print("Stand up %s" % (WalletdName))
         walletMgr.killall(allInstances=killAll)
         walletMgr.cleanup()
-        print("Stand up walletd")
+        print("Stand up vectrum-wallet")
         if walletMgr.launch() is False:
             cmdError("%s" % (WalletdName))
-            errorExit("Failed to stand up eos walletd.")
+            errorExit("Failed to stand up vectrum-wallet.")
 
     if sanityTest:
         testSuccessful=True
@@ -125,7 +125,7 @@ try:
     for account in accounts:
         Print("Importing keys for account %s into wallet %s." % (account.name, testWallet.name))
         if not walletMgr.importKey(account, testWallet):
-            cmdError("%s wallet import" % (ClientName))
+            cmdError("%s wallet import" % (CliName))
             errorExit("Failed to import key for account %s" % (account.name))
 
     defproduceraWalletName="defproducera"
@@ -139,27 +139,27 @@ try:
 
     Print("Importing keys for account %s into wallet %s." % (defproduceraAccount.name, defproduceraWallet.name))
     if not walletMgr.importKey(defproduceraAccount, defproduceraWallet):
-        cmdError("%s wallet import" % (ClientName))
+        cmdError("%s wallet import" % (CliName))
         errorExit("Failed to import key for account %s" % (defproduceraAccount.name))
 
     Print("Locking wallet \"%s\"." % (testWallet.name))
     if not walletMgr.lockWallet(testWallet):
-        cmdError("%s wallet lock" % (ClientName))
+        cmdError("%s wallet lock" % (CliName))
         errorExit("Failed to lock wallet %s" % (testWallet.name))
 
     Print("Unlocking wallet \"%s\"." % (testWallet.name))
     if not walletMgr.unlockWallet(testWallet):
-        cmdError("%s wallet unlock" % (ClientName))
+        cmdError("%s wallet unlock" % (CliName))
         errorExit("Failed to unlock wallet %s" % (testWallet.name))
 
     Print("Locking all wallets.")
     if not walletMgr.lockAllWallets():
-        cmdError("%s wallet lock_all" % (ClientName))
+        cmdError("%s wallet lock_all" % (CliName))
         errorExit("Failed to lock all wallets")
 
     Print("Unlocking wallet \"%s\"." % (testWallet.name))
     if not walletMgr.unlockWallet(testWallet):
-        cmdError("%s wallet unlock" % (ClientName))
+        cmdError("%s wallet unlock" % (CliName))
         errorExit("Failed to unlock wallet %s" % (testWallet.name))
 
     Print("Getting open wallet list.")
@@ -180,17 +180,17 @@ try:
 
     Print("Locking all wallets.")
     if not walletMgr.lockAllWallets():
-        cmdError("%s wallet lock_all" % (ClientName))
+        cmdError("%s wallet lock_all" % (CliName))
         errorExit("Failed to lock all wallets")
 
     Print("Unlocking wallet \"%s\"." % (defproduceraWallet.name))
     if not walletMgr.unlockWallet(defproduceraWallet):
-        cmdError("%s wallet unlock" % (ClientName))
+        cmdError("%s wallet unlock" % (CliName))
         errorExit("Failed to unlock wallet %s" % (defproduceraWallet.name))
 
     Print("Unlocking wallet \"%s\"." % (testWallet.name))
     if not walletMgr.unlockWallet(testWallet):
-        cmdError("%s wallet unlock" % (ClientName))
+        cmdError("%s wallet unlock" % (CliName))
         errorExit("Failed to unlock wallet %s" % (testWallet.name))
 
     Print("Getting wallet keys.")
@@ -228,7 +228,7 @@ try:
 
     expectedAmount=transferAmount
     Print("Verify transfer, Expected: %s" % (expectedAmount))
-    actualAmount=node.getAccountEosBalanceStr(testeraAccount.name)
+    actualAmount=node.getAccountBalanceStr(testeraAccount.name)
     if expectedAmount != actualAmount:
         cmdError("FAILURE - transfer failed")
         errorExit("Transfer verification failed. Excepted %s, actual: %s" % (expectedAmount, actualAmount))
@@ -240,7 +240,7 @@ try:
 
     expectedAmount="97.5421 {0}".format(CORE_SYMBOL)
     Print("Verify transfer, Expected: %s" % (expectedAmount))
-    actualAmount=node.getAccountEosBalanceStr(testeraAccount.name)
+    actualAmount=node.getAccountBalanceStr(testeraAccount.name)
     if expectedAmount != actualAmount:
         cmdError("FAILURE - transfer failed")
         errorExit("Transfer verification failed. Excepted %s, actual: %s" % (expectedAmount, actualAmount))
@@ -251,12 +251,12 @@ try:
 
     Print("Locking all wallets.")
     if not walletMgr.lockAllWallets():
-        cmdError("%s wallet lock_all" % (ClientName))
+        cmdError("%s wallet lock_all" % (CliName))
         errorExit("Failed to lock all wallets")
 
     Print("Unlocking wallet \"%s\"." % (testWallet.name))
     if not walletMgr.unlockWallet(testWallet):
-        cmdError("%s wallet unlock" % (ClientName))
+        cmdError("%s wallet unlock" % (CliName))
         errorExit("Failed to unlock wallet %s" % (testWallet.name))
 
     transferAmount="97.5311 {0}".format(CORE_SYMBOL)
@@ -267,7 +267,7 @@ try:
 
     expectedAmount="98.0311 {0}".format(CORE_SYMBOL) # 5000 initial deposit
     Print("Verify transfer, Expected: %s" % (expectedAmount))
-    actualAmount=node.getAccountEosBalanceStr(currencyAccount.name)
+    actualAmount=node.getAccountBalanceStr(currencyAccount.name)
     if expectedAmount != actualAmount:
         cmdError("FAILURE - transfer failed")
         errorExit("Transfer verification failed. Excepted %s, actual: %s" % (expectedAmount, actualAmount))
@@ -315,7 +315,7 @@ try:
     Print("Get code hash for account %s" % (currencyAccount.name))
     codeHash=node.getAccountCodeHash(currencyAccount.name)
     if codeHash is None:
-        cmdError("%s get code currency1111" % (ClientName))
+        cmdError("%s get code currency1111" % (CliName))
         errorExit("Failed to get code hash for account %s" % (currencyAccount.name))
     hashNum=int(codeHash, 16)
     if hashNum != 0:
@@ -327,26 +327,26 @@ try:
     Print("Publish contract")
     trans=node.publishContract(currencyAccount.name, contractDir, wasmFile, abiFile, waitForTransBlock=True)
     if trans is None:
-        cmdError("%s set contract currency1111" % (ClientName))
+        cmdError("%s set contract currency1111" % (CliName))
         errorExit("Failed to publish contract.")
 
     if not enableMongo:
         Print("Get code hash for account %s" % (currencyAccount.name))
         codeHash=node.getAccountCodeHash(currencyAccount.name)
         if codeHash is None:
-            cmdError("%s get code currency1111" % (ClientName))
+            cmdError("%s get code currency1111" % (CliName))
             errorExit("Failed to get code hash for account %s" % (currencyAccount.name))
         hashNum=int(codeHash, 16)
         if hashNum == 0:
             errorExit("FAILURE - get code currency1111 failed", raw=True)
     else:
         Print("verify abi is set")
-        account=node.getEosAccountFromDb(currencyAccount.name)
+        account=node.getAccountFromDb(currencyAccount.name)
         abiName=account["abi"]["structs"][0]["name"]
         abiActionName=account["abi"]["actions"][0]["name"]
         abiType=account["abi"]["actions"][0]["type"]
         if abiName != "account" or abiActionName != "close" or abiType != "close":
-            errorExit("FAILURE - get EOS account failed", raw=True)
+            errorExit("FAILURE - get VECTRUM account failed", raw=True)
 
     Print("push create action to currency1111 contract")
     contract="currency1111"
@@ -412,7 +412,7 @@ try:
         opts="--permission currency1111@active"
         trans=node.pushMessage(contract, action, data, opts)
         if trans is None or not trans[0]:
-            cmdError("%s push message currency1111 transfer" % (ClientName))
+            cmdError("%s push message currency1111 transfer" % (CliName))
             errorExit("Failed to push message to currency1111 contract")
         transId=Node.getTransId(trans[1])
 
@@ -421,7 +421,7 @@ try:
         if transDuplicate is not None and transDuplicate[0]:
             transDuplicateId=Node.getTransId(transDuplicate[1])
             if transId != transDuplicateId:
-                Print("%s push message currency1111 duplicate transfer incorrectly accepted, but they were generated with different transaction ids, this is a timing setup issue, trying again" % (ClientName))
+                Print("%s push message currency1111 duplicate transfer incorrectly accepted, but they were generated with different transaction ids, this is a timing setup issue, trying again" % (CliName))
                 # add the transfer that wasn't supposed to work
                 totalTransfer+=dupTransAmount
                 dupTransAmount+=1
@@ -429,7 +429,7 @@ try:
                 totalTransfer+=dupTransAmount
                 continue
             else:
-                cmdError("%s push message currency1111 transfer, \norig: %s \ndup: %s" % (ClientName, trans, transDuplicate))
+                cmdError("%s push message currency1111 transfer, \norig: %s \ndup: %s" % (CliName, trans, transDuplicate))
             errorExit("Failed to reject duplicate message for currency1111 contract")
         else:
             dupRejected=True
@@ -440,7 +440,7 @@ try:
 
     Print("verify transaction exists")
     if not node.waitForTransInBlock(transId):
-        cmdError("%s get transaction trans_id" % (ClientName))
+        cmdError("%s get transaction trans_id" % (CliName))
         errorExit("Failed to verify push message transaction id.")
 
     Print("read current contract balance")
@@ -514,7 +514,7 @@ try:
 
     Print("Unlocking wallet \"%s\"." % (defproduceraWallet.name))
     if not walletMgr.unlockWallet(defproduceraWallet):
-        cmdError("%s wallet unlock" % (ClientName))
+        cmdError("%s wallet unlock" % (CliName))
         errorExit("Failed to unlock wallet %s" % (defproduceraWallet.name))
 
     Print("push transfer action to currency1111 contract that would go negative")
@@ -525,7 +525,7 @@ try:
     opts="--permission defproducera@active"
     trans=node.pushMessage(contract, action, data, opts, True)
     if trans is None or trans[0]:
-        cmdError("%s push message currency1111 transfer should have failed" % (ClientName))
+        cmdError("%s push message currency1111 transfer should have failed" % (CliName))
         errorExit("Failed to reject invalid transfer message to currency1111 contract")
 
     Print("read current contract balance")
@@ -549,7 +549,7 @@ try:
     opts="--permission defproducera@active"
     trans=node.pushMessage(contract, action, data, opts)
     if trans is None or not trans[0]:
-        cmdError("%s push message currency1111 transfer" % (ClientName))
+        cmdError("%s push message currency1111 transfer" % (CliName))
         errorExit("Failed to push message to currency1111 contract")
     transId=Node.getTransId(trans[1])
 
@@ -578,7 +578,7 @@ try:
     opts="--permission defproducera@active"
     trans=node.pushMessage(contract, action, data, opts, True)
     if trans is None or trans[0]:
-        cmdError("%s push message currency1111 transfer should have failed" % (ClientName))
+        cmdError("%s push message currency1111 transfer should have failed" % (CliName))
         errorExit("Failed to reject invalid transfer message to currency1111 contract")
 
     Print("read current contract balance")
@@ -600,22 +600,22 @@ try:
 
     Print("Locking wallet \"%s\"." % (defproduceraWallet.name))
     if not walletMgr.lockWallet(defproduceraWallet):
-        cmdError("%s wallet lock" % (ClientName))
+        cmdError("%s wallet lock" % (CliName))
         errorExit("Failed to lock wallet %s" % (defproduceraWallet.name))
 
 
     contractDir="contracts/simpledb"
     wasmFile="simpledb.wasm"
     abiFile="simpledb.abi"
-    Print("Setting simpledb contract without simpledb account was causing core dump in %s." % (ClientName))
-    Print("Verify %s generates an error, but does not core dump." % (ClientName))
+    Print("Setting simpledb contract without simpledb account was causing core dump in %s." % (CliName))
+    Print("Verify %s generates an error, but does not core dump." % (CliName))
     retMap=node.publishContract("simpledb", contractDir, wasmFile, abiFile, shouldFail=True)
     if retMap is None:
         errorExit("Failed to publish, but should have returned a details map")
     if retMap["returncode"] == 0 or retMap["returncode"] == 139: # 139 SIGSEGV
         errorExit("FAILURE - set contract simpledb failed", raw=True)
     else:
-        Print("Test successful, %s returned error code: %d" % (ClientName, retMap["returncode"]))
+        Print("Test successful, %s returned error code: %d" % (CliName, retMap["returncode"]))
 
     Print("set permission")
     code="currency1111"
@@ -629,25 +629,25 @@ try:
 
     Print("Locking all wallets.")
     if not walletMgr.lockAllWallets():
-        cmdError("%s wallet lock_all" % (ClientName))
+        cmdError("%s wallet lock_all" % (CliName))
         errorExit("Failed to lock all wallets")
 
     Print("Unlocking wallet \"%s\"." % (defproduceraWallet.name))
     if not walletMgr.unlockWallet(defproduceraWallet):
-        cmdError("%s wallet unlock defproducera" % (ClientName))
+        cmdError("%s wallet unlock defproducera" % (CliName))
         errorExit("Failed to unlock wallet %s" % (defproduceraWallet.name))
 
     Print("Get account defproducera")
-    account=node.getEosAccount(defproduceraAccount.name, exitOnError=True)
+    account=node.getAccount(defproduceraAccount.name, exitOnError=True)
 
     Print("Unlocking wallet \"%s\"." % (defproduceraWallet.name))
     if not walletMgr.unlockWallet(testWallet):
-        cmdError("%s wallet unlock test" % (ClientName))
+        cmdError("%s wallet unlock test" % (CliName))
         errorExit("Failed to unlock wallet %s" % (testWallet.name))
 
     if not enableMongo:
         Print("Verify non-JSON call works")
-        rawAccount=node.getEosAccount(defproduceraAccount.name, exitOnError=True, returnType=ReturnType.raw)
+        rawAccount=node.getAccount(defproduceraAccount.name, exitOnError=True, returnType=ReturnType.raw)
         coreLiquidBalance=account['core_liquid_balance']
         match=re.search(r'\bliquid:\s*%s\s' % (coreLiquidBalance), rawAccount, re.MULTILINE | re.DOTALL)
         assert match is not None, "did not find the core liquid balance (\"liquid:\") of {} in \"{}\"".format(coreLiquidBalance, rawAccount)
@@ -697,6 +697,6 @@ try:
 
     testSuccessful=True
 finally:
-    TestHelper.shutdown(cluster, walletMgr, testSuccessful, killEosInstances, killWallet, keepLogs, killAll, dumpErrorDetails)
+    TestHelper.shutdown(cluster, walletMgr, testSuccessful, killInstances, killWallet, keepLogs, killAll, dumpErrorDetails)
 
 exit(0)

@@ -2,7 +2,7 @@
 #include <eosio/chain/apply_context.hpp>
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/wasm_eosio_constraints.hpp>
-//eos-vm includes
+//vectrum-vm includes
 #include <eosio/vm/backend.hpp>
 
 namespace eosio { namespace chain { namespace webassembly { namespace eos_vm_runtime {
@@ -104,7 +104,7 @@ std::unique_ptr<wasm_instantiated_module_interface> eos_vm_runtime<Impl>::instan
       registered_host_functions<apply_context>::resolve(bkend->get_module());
       return std::make_unique<eos_vm_instantiated_module<Impl>>(this, std::move(bkend));
    } catch(eosio::vm::exception& e) {
-      FC_THROW_EXCEPTION(wasm_execution_error, "Error building eos-vm interp: ${e}", ("e", e.what()));
+      FC_THROW_EXCEPTION(wasm_execution_error, "Error building vectrum-vm interp: ${e}", ("e", e.what()));
    }
 }
 

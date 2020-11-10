@@ -12,7 +12,7 @@ from os.path import join
 from datetime import datetime
 
 ###############################################################
-# nodeos_protocol_feature_test
+# node_protocol_feature_test
 #
 # Many smaller tests centered around irreversible mode
 #
@@ -24,7 +24,7 @@ Utils.Debug = args.v
 killAll=args.clean_run
 dumpErrorDetails=args.dump_error_details
 dontKill=args.leave_running
-killEosInstances=not dontKill
+killInstances=not dontKill
 killWallet=not dontKill
 keepLogs=args.keep_logs
 
@@ -45,7 +45,7 @@ try:
     TestHelper.printSystemInfo("BEGIN")
     cluster.killall(allInstances=killAll)
     cluster.cleanup()
-    cluster.launch(extraNodeosArgs=" --plugin eosio::producer_api_plugin  --http-max-response-time-ms 990000 ",
+    cluster.launch(extraNodeArgs=" --plugin eosio::producer_api_plugin  --http-max-response-time-ms 990000 ",
                    dontBootstrap=True,
                    pfSetupPolicy=PFSetupPolicy.NONE)
     biosNode = cluster.biosNode
@@ -68,7 +68,7 @@ try:
 
     testSuccessful = True
 finally:
-    TestHelper.shutdown(cluster, walletMgr, testSuccessful, killEosInstances, killWallet, keepLogs, killAll, dumpErrorDetails)
+    TestHelper.shutdown(cluster, walletMgr, testSuccessful, killInstances, killWallet, keepLogs, killAll, dumpErrorDetails)
 
 exitCode = 0 if testSuccessful else 1
 exit(exitCode)

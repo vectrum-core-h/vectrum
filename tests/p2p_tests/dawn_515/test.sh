@@ -16,7 +16,7 @@ delay=1
 
 read -d '' genesis << EOF
 {
-  "initial_timestamp": "2018-06-01T12:00:00.000",
+  "initial_timestamp": "2020-11-01T12:00:00.000",
   "initial_key": "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
   "initial_configuration": {
     "max_block_net_usage": 1048576,
@@ -244,32 +244,32 @@ read -d '' logging01 << EOF
 EOF
 
 rm -rf staging
-rm -rf etc/eosio/node_*
+rm -rf etc/vectrum/node_*
 rm -rf var/lib
 cName=config.ini
 lName=logging.json
 gName=genesis.json
 
-path=staging/etc/eosio/node_bios
+path=staging/etc/vectrum/node_bios
 mkdir -p $path
 echo "$configbios" > $path/$cName
 echo "$loggingbios" > $path/$lName
 echo "$genesis" > $path/$gName
 
-path=staging/etc/eosio/node_00
+path=staging/etc/vectrum/node_00
 mkdir -p $path
 echo "$config00" > $path/$cName
 echo "$logging00" > $path/$lName
 echo "$genesis" > $path/$gName
 
-path=staging/etc/eosio/node_01
+path=staging/etc/vectrum/node_01
 mkdir -p $path
 echo "$config01" > $path/$cName
 echo "$logging01" > $path/$lName
 echo "$genesis" > $path/$gName
 
 
-programs/eosio-launcher/eosio-launcher -p $pnodes -n $total_nodes --nogen -d $delay
+programs/launcher/vectrum-launcher -p $pnodes -n $total_nodes --nogen -d $delay
 
 sleep 5
 res=$(grep "reason = duplicate" var/lib/node_*/stderr.txt | wc -l)
@@ -280,9 +280,9 @@ if [ $res -ne 0 ]; then
     ret=1
 fi
 
-b5idbios=`./programs/cleos/cleos -u http://localhost:8888 get block 5 | grep "^ *\"id\""`
-b5id00=`./programs/cleos/cleos -u http://localhost:8889 get block 5 | grep "^ *\"id\""`
-b5id01=`./programs/cleos/cleos -u http://localhost:8890 get block 5 | grep "^ *\"id\""`
+b5idbios=`./programs/cli/vectrum-cli -u http://localhost:8888 get block 5 | grep "^ *\"id\""`
+b5id00=`./programs/cli/vectrum-cli -u http://localhost:8889 get block 5 | grep "^ *\"id\""`
+b5id01=`./programs/cli/vectrum-cli -u http://localhost:8890 get block 5 | grep "^ *\"id\""`
 
 if [ "$b5idbios" != "$b5id00" ]; then
     echo FAILURE: nodes are not in sync
@@ -298,8 +298,8 @@ if [ $ret  -eq 0 ]; then
     echo SUCCESS
 fi
 
-programs/eosio-launcher/eosio-launcher -k 15
+programs/launcher/vectrum-launcher -k 15
 rm -rf staging
 rm -rf var/lib/node_*
-rm -rf etc/eosio/node_*
+rm -rf etc/vectrum/node_*
 exit $ret

@@ -220,7 +220,7 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
 
 #ifdef EOSIO_EOS_VM_OC_DEVELOPER
    wasm_runtime_opt += delim + "\"eos-vm-oc\"";
-   wasm_runtime_desc += "\"eos-vm-oc\" : Unsupported. Instead, use one of the other runtimes along with the option enable-eos-vm-oc.\n";
+   wasm_runtime_desc += "\"eos-vm-oc\" : Unsupported. Instead, use one of the other runtimes along with the option enable-vectrum-vm-oc.\n";
 #endif
    wasm_runtime_opt += ")\n" + wasm_runtime_desc;
 
@@ -236,7 +236,7 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
 #ifndef EOSIO_EOS_VM_OC_DEVELOPER
             //throwing an exception here (like EOS_ASSERT) is just gobbled up with a "Failed to initialize" error :(
             if(vm == wasm_interface::vm_type::eos_vm_oc) {
-               elog("EOS VM OC is a tier-up compiler and works in conjunction with the configured base WASM runtime. Enable EOS VM OC via 'eos-vm-oc-enable' option");
+               elog("VECTRUM VM OC is a tier-up compiler and works in conjunction with the configured base WASM runtime. Enable VECTRUM VM OC via 'eos-vm-oc-enable' option");
                EOS_ASSERT(false, plugin_exception, "");
             }
 #endif
@@ -300,14 +300,14 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
 #endif
 
 #ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
-         ("eos-vm-oc-cache-size-mb", bpo::value<uint64_t>()->default_value(eosvmoc::config().cache_size / (1024u*1024u)), "Maximum size (in MiB) of the EOS VM OC code cache")
+         ("eos-vm-oc-cache-size-mb", bpo::value<uint64_t>()->default_value(eosvmoc::config().cache_size / (1024u*1024u)), "Maximum size (in MiB) of the VECTRUM VM OC code cache")
          ("eos-vm-oc-compile-threads", bpo::value<uint64_t>()->default_value(1u)->notifier([](const auto t) {
                if(t == 0) {
                   elog("eos-vm-oc-compile-threads must be set to a non-zero value");
                   EOS_ASSERT(false, plugin_exception, "");
                }
-         }), "Number of threads to use for EOS VM OC tier-up")
-         ("eos-vm-oc-enable", bpo::bool_switch(), "Enable EOS VM OC tier-up runtime")
+         }), "Number of threads to use for VECTRUM VM OC tier-up")
+         ("eos-vm-oc-enable", bpo::bool_switch(), "Enable VECTRUM VM OC tier-up runtime")
 #endif
          ("enable-account-queries", bpo::value<bool>()->default_value(false), "enable queries to find accounts by various metadata.")
          ("max-nonprivileged-inline-action-size", bpo::value<uint32_t>()->default_value(config::default_max_nonprivileged_inline_action_size), "maximum allowed size (in bytes) of an inline action for a nonprivileged account")
@@ -1484,13 +1484,13 @@ void chain_plugin::handle_guard_exception(const chain::guard_exception& e) {
 
 void chain_plugin::handle_db_exhaustion() {
    elog("database memory exhausted: increase chain-state-db-size-mb and/or reversible-blocks-db-size-mb");
-   //return 1 -- it's what programs/nodeos/main.cpp considers "BAD_ALLOC"
+   //return 1 -- it's what programs/node/main.cpp considers "BAD_ALLOC"
    std::_Exit(1);
 }
 
 void chain_plugin::handle_bad_alloc() {
    elog("std::bad_alloc - memory exhausted");
-   //return -2 -- it's what programs/nodeos/main.cpp reports for std::exception
+   //return -2 -- it's what programs/node/main.cpp reports for std::exception
    std::_Exit(-2);
 }
 
@@ -1663,7 +1663,7 @@ uint64_t convert_to_type(const string& str, const string& desc) {
       return s.to_uint64_t();
    } catch( ... ) { }
 
-   if (str.find(',') != string::npos) { // fix #6274 only match formats like 4,EOS
+   if (str.find(',') != string::npos) { // fix #6274 only match formats like 4,VTM
       try {
          auto symb = eosio::chain::symbol::from_string(str);
          return symb.value();

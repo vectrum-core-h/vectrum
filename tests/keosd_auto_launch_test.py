@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 
-# This script tests that cleos launches keosd automatically when keosd is not
+# This script tests that vectrum-cli launches vectrum-wallet automatically when vectrum-wallet is not
 # running yet.
 
 import subprocess
 
 
-def run_cleos_wallet_command(command: str, no_auto_keosd: bool):
-    """Run the given cleos command and return subprocess.CompletedProcess."""
-    args = ['./programs/cleos/cleos']
+def run_cli_wallet_command(command: str, no_auto_wallet: bool):
+    """Run the given vectrum-cli command and return subprocess.CompletedProcess."""
+    args = ['./programs/cli/vectrum-cli']
 
-    if no_auto_keosd:
-        args.append('--no-auto-keosd')
+    if no_auto_wallet:
+        args.append('--no-auto-wallet')
 
     args += 'wallet', command
 
@@ -21,37 +21,37 @@ def run_cleos_wallet_command(command: str, no_auto_keosd: bool):
                           stderr=subprocess.PIPE)
 
 
-def stop_keosd():
-    """Stop the default keosd instance."""
-    run_cleos_wallet_command('stop', no_auto_keosd=True)
+def stop_wallet():
+    """Stop the default vectrum-wallet instance."""
+    run_cli_wallet_command('stop', no_auto_wallet=True)
 
 
-def check_cleos_stderr(stderr: bytes, expected_match: bytes):
+def check_cli_stderr(stderr: bytes, expected_match: bytes):
     if expected_match not in stderr:
         raise RuntimeError("'{}' not found in {}'".format(
             expected_match.decode(), stderr.decode()))
 
 
-def keosd_auto_launch_test():
-    """Test that keos auto-launching works but can be optionally inhibited."""
-    stop_keosd()
+def wallet_auto_launch_test():
+    """Test that vectrum-wallet auto-launching works but can be optionally inhibited."""
+    stop_wallet()
 
-    # Make sure that when '--no-auto-keosd' is given, keosd is not started by
-    # cleos.
-    completed_process = run_cleos_wallet_command('list', no_auto_keosd=True)
+    # Make sure that when '--no-auto-wallet' is given, vectrum-wallet is not started by
+    # vectrum-cli.
+    completed_process = run_cli_wallet_command('list', no_auto_wallet=True)
     assert completed_process.returncode != 0
-    check_cleos_stderr(completed_process.stderr, b'Failed to connect to keosd')
+    check_cli_stderr(completed_process.stderr, b'Failed to connect to vectrum-wallet')
 
-    # Verify that keosd auto-launching works.
-    completed_process = run_cleos_wallet_command('list', no_auto_keosd=False)
+    # Verify that vectrum-wallet auto-launching works.
+    completed_process = run_cli_wallet_command('list', no_auto_wallet=False)
     if completed_process.returncode != 0:
-        raise RuntimeError("Expected that keosd would be started, "
+        raise RuntimeError("Expected that vectrum-wallet would be started, "
                            "but got an error instead: {}".format(
                                completed_process.stderr.decode()))
-    check_cleos_stderr(completed_process.stderr, b'launched')
+    check_cli_stderr(completed_process.stderr, b'launched')
 
 
 try:
-    keosd_auto_launch_test()
+    wallet_auto_launch_test()
 finally:
-    stop_keosd()
+    stop_wallet()

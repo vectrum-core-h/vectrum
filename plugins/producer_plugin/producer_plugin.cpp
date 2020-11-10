@@ -649,7 +649,7 @@ void new_chain_banner(const eosio::chain::controller& db)
       "*******************************\n"
       "*                             *\n"
       "*   ------ NEW CHAIN ------   *\n"
-      "*   -  Welcome to EOSIO!  -   *\n"
+      "*   - Welcome to VECTRUM! -   *\n"
       "*   -----------------------   *\n"
       "*                             *\n"
       "*******************************\n"
@@ -696,13 +696,13 @@ void producer_plugin::set_program_options(
                 default_priv_key.get_public_key().to_string() + "=KEY:" + default_priv_key.to_string()),
           "Key=Value pairs in the form <public-key>=<provider-spec>\n"
           "Where:\n"
-          "   <public-key>    \tis a string form of a vaild EOSIO public key\n\n"
+          "   <public-key>    \tis a string form of a vaild VECTRUM public key\n\n"
           "   <provider-spec> \tis a string in the form <provider-type>:<data>\n\n"
-          "   <provider-type> \tis KEY, or KEOSD\n\n"
-          "   KEY:<data>      \tis a string form of a valid EOSIO private key which maps to the provided public key\n\n"
-          "   KEOSD:<data>    \tis the URL where keosd is available and the approptiate wallet(s) are unlocked")
-         ("keosd-provider-timeout", boost::program_options::value<int32_t>()->default_value(5),
-          "Limits the maximum time (in milliseconds) that is allowed for sending blocks to a keosd provider for signing")
+          "   <provider-type> \tis KEY, or WALLET\n\n"
+          "   KEY:<data>      \tis a string form of a valid VECTRUM private key which maps to the provided public key\n\n"
+          "   WALLET:<data>    \tis the URL where vectrum-wallet is available and the approptiate wallet(s) are unlocked")
+         ("wallet-provider-timeout", boost::program_options::value<int32_t>()->default_value(5),
+          "Limits the maximum time (in milliseconds) that is allowed for sending blocks to a vectrum-wallet provider for signing")
          ("greylist-account", boost::program_options::value<vector<string>>()->composing()->multitoken(),
           "account that can not access to extended CPU/NET virtual resources")
          ("greylist-limit", boost::program_options::value<uint32_t>()->default_value(1000),
@@ -848,7 +848,7 @@ void producer_plugin::plugin_initialize(const boost::program_options::variables_
 
             if (spec_type_str == "KEY") {
                my->_signature_providers[pubkey] = make_key_signature_provider(private_key_type(spec_data));
-            } else if (spec_type_str == "KEOSD") {
+            } else if (spec_type_str == "WALLET") {
                my->_signature_providers[pubkey] = make_keosd_signature_provider(my, spec_data, pubkey);
             }
 
@@ -858,7 +858,7 @@ void producer_plugin::plugin_initialize(const boost::program_options::variables_
       }
    }
 
-   my->_keosd_provider_timeout_us = fc::milliseconds(options.at("keosd-provider-timeout").as<int32_t>());
+   my->_keosd_provider_timeout_us = fc::milliseconds(options.at("wallet-provider-timeout").as<int32_t>());
 
    my->_produce_time_offset_us = options.at("produce-time-offset-us").as<int32_t>();
    EOS_ASSERT( my->_produce_time_offset_us <= 0 && my->_produce_time_offset_us >= -config::block_interval_us, plugin_config_exception,

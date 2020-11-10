@@ -3,15 +3,15 @@ content_title: Shell Scripts
 ---
 
 [[info | Did you know?]]
-| Shell scripts automate the process of building, installing, testing, and uninstalling the EOSIO software and dependencies.
+| Shell scripts automate the process of building, installing, testing, and uninstalling the VECTRUM software and dependencies.
 
-To build EOSIO from the source code using shell scripts, visit the sections below:
+To build VECTRUM from the source code using shell scripts, visit the sections below:
 
-1. [Download EOSIO Source](01_download-eosio-source.md)
-2. [Build EOSIO Binaries](02_build-eosio-binaries.md)
-3. [Install EOSIO Binaries](03_install-eosio-binaries.md)
-4. [Test EOSIO Binaries](04_test-eosio-binaries.md)
-5. [Uninstall EOSIO](05_uninstall-eosio.md)
+1. [Download VECTRUM Source](./01_download-source.md)
+2. [Build VECTRUM Binaries](./02_build-binaries.md)
+3. [Install VECTRUM Binaries](./03_install-binaries.md)
+4. [Test VECTRUM Binaries](./04_test-binaries.md)
+5. [Uninstall VECTRUM](./05_uninstall.md)
 
-[[info | Building EOSIO is for Advanced Developers]]
-| If you are new to EOSIO, it is recommended that you install the [EOSIO Prebuilt Binaries](../../00_install-prebuilt-binaries.md) instead of building from source.
+[[info | Building VECTRUM is for Advanced Developers]]
+| If you are new to VECTRUM, it is recommended that you install the [VECTRUM Prebuilt Binaries](../../00_install-prebuilt-binaries.md) instead of building from source.

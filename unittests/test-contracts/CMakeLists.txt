@@ -1,6 +1,6 @@
-if( EOSIO_COMPILE_TEST_CONTRACTS )
-   set(EOSIO_WASM_OLD_BEHAVIOR "Off")
-   find_package( eosio.cdt REQUIRED )
+if( VECTRUM_COMPILE_TEST_CONTRACTS )
+   set(VECTRUM_WASM_OLD_BEHAVIOR "Off")
+   find_package( vectrum.cdt REQUIRED )
 endif()
 
 if ("${CMAKE_GENERATOR}" STREQUAL "Ninja")

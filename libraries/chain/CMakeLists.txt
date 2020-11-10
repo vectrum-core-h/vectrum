@@ -41,7 +41,7 @@ if("eos-vm-oc" IN_LIST EOSIO_WASM_RUNTIMES)
    include_directories(${LLVM_INCLUDE_DIRS})
    add_definitions(${LLVM_DEFINITIONS})
 
-   option(EOSVMOC_ENABLE_DEVELOPER_OPTIONS "enable developer options for EOS VM OC" OFF)
+   option(EOSVMOC_ENABLE_DEVELOPER_OPTIONS "enable developer options for VECTRUM VM OC" OFF)
 endif()
 
 if("eos-vm" IN_LIST EOSIO_WASM_RUNTIMES OR "eos-vm-jit" IN_LIST EOSIO_WASM_RUNTIMES)
@@ -111,7 +111,7 @@ target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
 target_include_directories( eosio_chain
                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include"
                                    "${CMAKE_CURRENT_SOURCE_DIR}/../wasm-jit/Include"
-                                   "${CMAKE_CURRENT_SOURCE_DIR}/libraries/eos-vm/include"
+                                   "${CMAKE_CURRENT_SOURCE_DIR}/libraries/vectrum-vm/include"
                                    "${CMAKE_SOURCE_DIR}/libraries/wabt"
                                    "${CMAKE_BINARY_DIR}/libraries/wabt"
                             )
@@ -127,7 +127,7 @@ foreach(RUNTIME ${EOSIO_WASM_RUNTIMES})
 endforeach()
 
 if(EOSVMOC_ENABLE_DEVELOPER_OPTIONS)
-   message(WARNING "EOS VM OC Developer Options are enabled; these are NOT supported")
+   message(WARNING "VECTRUM VM OC Developer Options are enabled; these are NOT supported")
    target_compile_definitions(eosio_chain PUBLIC EOSIO_EOS_VM_OC_DEVELOPER)
 endif()
 

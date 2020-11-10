@@ -1,8 +1,8 @@
 #!/usr/bin/env bats
 load helpers/general
 
-export SCRIPT_LOCATION="scripts/eosio_build.sh"
-export TEST_LABEL="[eosio_build_centos]"
+export SCRIPT_LOCATION="scripts/build.sh"
+export TEST_LABEL="[vectrum_build_centos]"
 
 [[ $ARCH == "Linux" ]] || exit 0 # Exit 0 is required for pipeline
 [[ $NAME == "CentOS Linux" ]] || exit 0 # Exit 0 is required for pipeline
@@ -20,7 +20,7 @@ export TEST_LABEL="[eosio_build_centos]"
 # Testing MongoDB
 ./tests/bash-bats/modules/mongodb.sh
 
-## Needed to load eosio_build_ files properly; it can be empty
+## Needed to load vectrum_build_ files properly; it can be empty
 @test "${TEST_LABEL} > General" {
     set_system_vars # Obtain current machine's resources and set the necessary variables (like JOBS, etc)
 
@@ -32,15 +32,15 @@ export TEST_LABEL="[eosio_build_centos]"
     [[ ! -z $(echo "${output}" | grep "devtoolset-8.* found") ]] || exit
     [[ ! -z $(echo "${output}" | grep "Executing: source /opt/rh/devtoolset-8/enable") ]] || exit
     [[ ! -z $(echo "${output}" | grep "Executing: make -j${JOBS}") ]] || exit
-    [[ ! -z $(echo "${output}" | grep "Starting EOSIO Dependency Install") ]] || exit
+    [[ ! -z $(echo "${output}" | grep "Starting VECTRUM Dependency Install") ]] || exit
     [[ ! -z $(echo "${output}" | grep "Executing: eval /usr/bin/yum -y update") ]] || exit
     [[ ! -z $(echo "${output}" | grep "Python36 successfully enabled") ]] || exit
     [[ -z $(echo "${output}" | grep "-   NOT found") ]] || exit
     [[ ! -z $(echo "${output}" | grep "Ensuring CMAKE") ]] || exit
     [[ ! -z $(echo "${output}" | grep /NEWPATH.*/src/boost) ]] || exit
-    [[ ! -z $(echo "${output}" | grep "Starting EOSIO Build") ]] || exit
+    [[ ! -z $(echo "${output}" | grep "Starting VECTRUM Build") ]] || exit
     [[ ! -z $(echo "${output}" | grep "make -j${CPU_CORES}") ]] || exit
-    [[ ! -z $(echo "${output}" | grep "EOSIO has been successfully built") ]] || exit
+    [[ ! -z $(echo "${output}" | grep "VECTRUM has been successfully built") ]] || exit
     uninstall-package devtoolset-8* WETRUN &>/dev/null
     uninstall-package centos-release-scl WETRUN &>/dev/null
 }

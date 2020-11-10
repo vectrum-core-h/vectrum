@@ -53,25 +53,25 @@ class Utils:
     Debug=False
     FNull = open(os.devnull, 'w')
 
-    EosClientPath="programs/cleos/cleos"
-    MiscEosClientArgs="--no-auto-keosd"
+    CliPath="programs/cli/vectrum-cli"
+    MiscCliArgs="--no-auto-wallet"
 
-    EosWalletName="keosd"
-    EosWalletPath="programs/keosd/"+ EosWalletName
+    WalletName="vectrum-wallet"
+    WalletPath="programs/wallet/"+ WalletName
 
-    EosServerName="nodeos"
-    EosServerPath="programs/nodeos/"+ EosServerName
+    NodeName="vectrum-node"
+    NodePath="programs/node/"+ NodeName
 
-    EosLauncherPath="programs/eosio-launcher/eosio-launcher"
+    LauncherPath="programs/launcher/vectrum-launcher"
     MongoPath="mongo"
     ShuttingDown=False
     CheckOutputDeque=deque(maxlen=10)
 
-    EosBlockLogPath="programs/eosio-blocklog/eosio-blocklog"
+    BlockLogPath="programs/blocklog/vectrum-blocklog"
 
     FileDivider="================================================================="
     DataDir="var/lib/"
-    ConfigDir="etc/eosio/"
+    ConfigDir="etc/vectrum/"
 
     TimeFmt='%Y-%m-%dT%H:%M:%S.%f'
 
@@ -333,7 +333,7 @@ class Utils:
         else:
             unhandledEnumType(blockLogAction)
 
-        cmd="%s --blocks-dir %s --as-json-array %s%s%s%s" % (Utils.EosBlockLogPath, blockLogLocation, outputFileStr, firstStr, lastStr, blockLogActionStr)
+        cmd="%s --blocks-dir %s --as-json-array %s%s%s%s" % (Utils.BlockLogPath, blockLogLocation, outputFileStr, firstStr, lastStr, blockLogActionStr)
         if Utils.Debug: Utils.Print("cmd: %s" % (cmd))
         rtn=None
         try:

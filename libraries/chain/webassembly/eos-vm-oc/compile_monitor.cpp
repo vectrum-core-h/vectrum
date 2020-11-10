@@ -186,7 +186,7 @@ private:
 struct compile_monitor {
    compile_monitor(boost::asio::io_context& ctx, local::datagram_protocol::socket&& n, wrapped_fd&& t) : _nodeos_socket(std::move(n)), _trampoline_socket(std::move(t)) {
       //the only duty of compile_monitor is to create a compile_monitor_session when a code_cache instance
-      // in nodeos wants one
+      // in vectrum-node wants one
       wait_for_new_incomming_session(ctx);
    }
 
@@ -197,7 +197,7 @@ struct compile_monitor {
             return;
          }
          auto [success, message, fds] = read_message_with_fds(_nodeos_socket);
-         if(!success) {   //failure reading indicates that nodeos has shut down
+         if(!success) {   //failure reading indicates that vectrum-node has shut down
             ctx.stop();
             return;
          }
@@ -238,7 +238,7 @@ void launch_compile_monitor(int nodeos_fd) {
    prctl(PR_SET_PDEATHSIG, SIGKILL);
 
    //first off, let's disable shutdown signals to us; we want all shutdown indicators to come from
-   // nodeos shutting us down
+   // vectrum-node shutting us down
    sigset_t set;
    sigemptyset(&set);
    sigaddset(&set, SIGHUP);
@@ -265,7 +265,7 @@ void launch_compile_monitor(int nodeos_fd) {
       compile_monitor monitor(ctx, std::move(nodeos_socket), std::move(trampoline_socket));
       ctx.run();
       if(monitor._compile_sessions.size())
-         std::cerr << "ERROR: EOS VM OC compiler monitor exiting with active sessions" << std::endl;
+         std::cerr << "ERROR: VECTRUM VM OC compiler monitor exiting with active sessions" << std::endl;
    }
    
    _exit(0);
@@ -298,7 +298,7 @@ extern "C" int __wrap_main(int argc, char* argv[]) {
 }
 
 wrapped_fd get_connection_to_compile_monitor(int cache_fd) {
-   FC_ASSERT(the_compile_monitor_trampoline.compile_manager_pid >= 0, "EOS VM oop connection doesn't look active");
+   FC_ASSERT(the_compile_monitor_trampoline.compile_manager_pid >= 0, "VECTRUM VM oop connection doesn't look active");
 
    int socks[2]; //0: our socket to compile_manager_session, 1: socket we'll give to compile_maanger_session
    socketpair(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC, 0, socks);

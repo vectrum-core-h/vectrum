@@ -12,7 +12,7 @@ import re
 ###############################################################
 # launcher-test
 #
-# Specifically tests using the bios bootstrap script that is created by eosio-launcher
+# Specifically tests using the bios bootstrap script that is created by vectrum-launcher
 #
 ###############################################################
 
@@ -35,11 +35,11 @@ Utils.Debug=debug
 cluster=Cluster(walletd=True, defproduceraPrvtKey=defproduceraPrvtKey)
 walletMgr=WalletMgr(True)
 testSuccessful=False
-killEosInstances=not dontKill
+killInstances=not dontKill
 killWallet=not dontKill
 
-WalletdName=Utils.EosWalletName
-ClientName="cleos"
+WalletdName=Utils.WalletName
+CliName="vectrum-cli"
 timeout = .5 * 12 * 2 + 60 # time for finalization with 1 producer + 60 seconds padding
 Utils.setIrreversibleTimeout(timeout)
 
@@ -55,17 +55,17 @@ try:
         pnodes=4
         if cluster.launch(pnodes=pnodes, totalNodes=pnodes) is False:
             cmdError("launcher")
-            errorExit("Failed to stand up eos cluster.")
+            errorExit("Failed to stand up VECTRUM cluster.")
     else:
         walletMgr.killall(allInstances=killAll)
         walletMgr.cleanup()
         cluster.initializeNodes(defproduceraPrvtKey=defproduceraPrvtKey)
-        killEosInstances=False
+        killInstances=False
 
-        print("Stand up walletd")
+        print("Stand up vectrum-wallet")
         if walletMgr.launch() is False:
             cmdError("%s" % (WalletdName))
-            errorExit("Failed to stand up eos walletd.")
+            errorExit("Failed to stand up vectrum-wallet.")
 
     Print("Validating system accounts after bootstrap")
     cluster.validateAccounts(None)
@@ -102,7 +102,7 @@ try:
     for account in accounts:
         Print("Importing keys for account %s into wallet %s." % (account.name, testWallet.name))
         if not walletMgr.importKey(account, testWallet):
-            cmdError("%s wallet import" % (ClientName))
+            cmdError("%s wallet import" % (CliName))
             errorExit("Failed to import key for account %s" % (account.name))
 
     defproduceraWalletName="defproducera"
@@ -115,7 +115,7 @@ try:
 
     Print("Importing keys for account %s into wallet %s." % (defproduceraAccount.name, defproduceraWallet.name))
     if not walletMgr.importKey(defproduceraAccount, defproduceraWallet):
-        cmdError("%s wallet import" % (ClientName))
+        cmdError("%s wallet import" % (CliName))
         errorExit("Failed to import key for account %s" % (defproduceraAccount.name))
 
     node=cluster.getNode(0)
@@ -147,7 +147,7 @@ try:
 
     expectedAmount=transferAmount
     Print("Verify transfer, Expected: %s" % (expectedAmount))
-    actualAmount=node.getAccountEosBalanceStr(testeraAccount.name)
+    actualAmount=node.getAccountBalanceStr(testeraAccount.name)
     if expectedAmount != actualAmount:
         cmdError("FAILURE - transfer failed")
         errorExit("Transfer verification failed. Excepted %s, actual: %s" % (expectedAmount, actualAmount))
@@ -159,7 +159,7 @@ try:
 
     expectedAmount="97.5421 {0}".format(CORE_SYMBOL)
     Print("Verify transfer, Expected: %s" % (expectedAmount))
-    actualAmount=node.getAccountEosBalanceStr(testeraAccount.name)
+    actualAmount=node.getAccountBalanceStr(testeraAccount.name)
     if expectedAmount != actualAmount:
         cmdError("FAILURE - transfer failed")
         errorExit("Transfer verification failed. Excepted %s, actual: %s" % (expectedAmount, actualAmount))
@@ -176,7 +176,7 @@ try:
 
     expectedAmount="98.0311 {0}".format(CORE_SYMBOL) # 5000 initial deposit
     Print("Verify transfer, Expected: %s" % (expectedAmount))
-    actualAmount=node.getAccountEosBalanceStr(currencyAccount.name)
+    actualAmount=node.getAccountBalanceStr(currencyAccount.name)
     if expectedAmount != actualAmount:
         cmdError("FAILURE - transfer failed")
         errorExit("Transfer verification failed. Excepted %s, actual: %s" % (expectedAmount, actualAmount))
@@ -212,17 +212,17 @@ try:
     Print("Bouncing nodes #00 and #01")
     if cluster.bounce("00,01") is False:
         cmdError("launcher bounce")
-        errorExit("Failed to bounce eos node.")
+        errorExit("Failed to bounce vectrum-node.")
 
     Print("Taking down node #02")
     if cluster.down("02") is False:
         cmdError("launcher down command")
-        errorExit("Failed to take down eos node.")
+        errorExit("Failed to take down vectrum-node.")
 
     Print("Using bounce option to re-launch node #02")
     if cluster.bounce("02") is False:
         cmdError("launcher bounce")
-        errorExit("Failed to bounce eos node.")
+        errorExit("Failed to bounce vectrum-node.")
 
     p = re.compile('Assert')
     errFileName="var/lib/node_00/stderr.txt"
@@ -244,6 +244,6 @@ try:
 
     testSuccessful=True
 finally:
-    TestHelper.shutdown(cluster, walletMgr, testSuccessful, killEosInstances, killWallet, keepLogs, killAll, dumpErrorDetails)
+    TestHelper.shutdown(cluster, walletMgr, testSuccessful, killInstances, killWallet, keepLogs, killAll, dumpErrorDetails)
 
 exit(0)

@@ -13,7 +13,7 @@ from TestHelper import TestHelper
 import signal
 
 ###############################################################
-# nodeos_forked_chain_test
+# node_forked_chain_test
 # 
 # This test sets up 2 producing nodes and one "bridge" node using test_control_api_plugin.
 #   One producing node has 11 of the elected producers and the other has 10 of the elected producers.
@@ -146,11 +146,11 @@ walletPort=args.wallet_port
 
 walletMgr=WalletMgr(True, port=walletPort)
 testSuccessful=False
-killEosInstances=not dontKill
+killInstances=not dontKill
 killWallet=not dontKill
 
-WalletdName=Utils.EosWalletName
-ClientName="cleos"
+WalletdName=Utils.WalletName
+CliName="vectrum-cli"
 
 try:
     TestHelper.printSystemInfo("BEGIN")
@@ -159,9 +159,9 @@ try:
     cluster.killall(allInstances=killAll)
     cluster.cleanup()
     Print("Stand up cluster")
-    specificExtraNodeosArgs={}
+    specificExtraNodeArgs={}
     # producer nodes will be mapped to 0 through totalProducerNodes-1, so the number totalProducerNodes will be the non-producing node
-    specificExtraNodeosArgs[totalProducerNodes]="--plugin eosio::test_control_api_plugin"
+    specificExtraNodeArgs[totalProducerNodes]="--plugin eosio::test_control_api_plugin"
 
 
     # ***   setup topogrophy   ***
@@ -171,9 +171,9 @@ try:
 
     if cluster.launch(prodCount=prodCount, topo="bridge", pnodes=totalProducerNodes,
                       totalNodes=totalNodes, totalProducers=totalProducers,
-                      useBiosBootFile=False, specificExtraNodeosArgs=specificExtraNodeosArgs) is False:
+                      useBiosBootFile=False, specificExtraNodeArgs=specificExtraNodeArgs) is False:
         Utils.cmdError("launcher")
-        Utils.errorExit("Failed to stand up eos cluster.")
+        Utils.errorExit("Failed to stand up VECTRUM cluster.")
     Print("Validating system accounts after bootstrap")
     cluster.validateAccounts(None)
 
@@ -541,7 +541,7 @@ try:
 
     testSuccessful=True
 finally:
-    TestHelper.shutdown(cluster, walletMgr, testSuccessful=testSuccessful, killEosInstances=killEosInstances, killWallet=killWallet, keepLogs=keepLogs, cleanRun=killAll, dumpErrorDetails=dumpErrorDetails)
+    TestHelper.shutdown(cluster, walletMgr, testSuccessful=testSuccessful, killInstances=killInstances, killWallet=killWallet, keepLogs=keepLogs, cleanRun=killAll, dumpErrorDetails=dumpErrorDetails)
 
     if not testSuccessful:
         Print(Utils.FileDivider)

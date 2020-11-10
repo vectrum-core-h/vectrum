@@ -337,7 +337,7 @@ void mongo_db_plugin_impl::applied_transaction( const chain::transaction_trace_p
       // from an incomplete block. This means that traces will not be recorded in speculative read-mode, but
       // users should not be using the mongo_db_plugin in that mode anyway.
       //
-      // Allow logging traces if node is a producer for testing purposes, so a single nodeos can do both for testing.
+      // Allow logging traces if node is a producer for testing purposes, so a single vectrum-node can do both for testing.
       //
       // It is recommended to run mongo_db_plugin in read-mode = read-only.
       //
@@ -1420,7 +1420,7 @@ void mongo_db_plugin_impl::init() {
 
          try {
             // MongoDB administrators (to enable sharding) :
-            //   1. enableSharding database (default to EOS)
+            //   1. enableSharding database (default to VECTRUM)
             //   2. shardCollection: blocks, action_traces, transaction_traces, especially action_traces
             //   3. Compound index with shard key (default to _id below), to improve query performance.
 
@@ -1510,7 +1510,7 @@ void mongo_db_plugin::set_program_options(options_description& cli, options_desc
 {
    cfg.add_options()
          ("mongodb-queue-size,q", bpo::value<uint32_t>()->default_value(1024),
-         "The target queue size between nodeos and MongoDB plugin thread.")
+         "The target queue size between vectrum-node and MongoDB plugin thread.")
          ("mongodb-abi-cache-size", bpo::value<uint32_t>()->default_value(2048),
           "The maximum size of the abi cache for serializing data.")
          ("mongodb-wipe", bpo::bool_switch()->default_value(false),
@@ -1520,8 +1520,8 @@ void mongo_db_plugin::set_program_options(options_description& cli, options_desc
          "If specified then only abi data pushed to mongodb until specified block is reached.")
          ("mongodb-uri,m", bpo::value<std::string>(),
          "MongoDB URI connection string, see: https://docs.mongodb.com/master/reference/connection-string/."
-               " If not specified then plugin is disabled. Default database 'EOS' is used if not specified in URI."
-               " Example: mongodb://127.0.0.1:27017/EOS")
+               " If not specified then plugin is disabled. Default database 'VECTRUM' is used if not specified in URI."
+               " Example: mongodb://127.0.0.1:27017/VECTRUM")
          ("mongodb-update-via-block-num", bpo::value<bool>()->default_value(false),
           "Update blocks/block_state with latest via block number so that duplicates are overwritten.")
          ("mongodb-store-blocks", bpo::value<bool>()->default_value(true),
@@ -1556,7 +1556,7 @@ void mongo_db_plugin::plugin_initialize(const variables_map& options)
                my->wipe_database_on_startup = true;
             } else if( options.count( "mongodb-block-start" ) == 0 ) {
                EOS_ASSERT( false, chain::plugin_config_exception, "--mongodb-wipe required with --replay-blockchain, --hard-replay-blockchain, or --delete-all-blocks"
-                                 " --mongodb-wipe will remove all EOS collections from mongodb." );
+                                 " --mongodb-wipe will remove all VECTRUM collections from mongodb." );
             }
          }
 
@@ -1637,7 +1637,7 @@ void mongo_db_plugin::plugin_initialize(const variables_map& options)
          mongocxx::uri uri = mongocxx::uri{uri_str};
          my->db_name = uri.database();
          if( my->db_name.empty())
-            my->db_name = "EOS";
+            my->db_name = "VECTRUM";
          my->mongo_pool.emplace(uri);
 
          // hook up to signals on controller

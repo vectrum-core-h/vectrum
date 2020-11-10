@@ -1,0 +1,8 @@
+/**
+ * \warning This file is machine generated. DO NOT EDIT.  See config.hpp.in for changes.
+ */
+#pragma once
+
+namespace eosio { namespace keosd { namespace config {
+  const string wallet_executable_name = "${WALLET_EXECUTABLE_NAME}";
+}}}

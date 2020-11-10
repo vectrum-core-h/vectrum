@@ -148,9 +148,9 @@ BOOST_AUTO_TEST_SUITE(block_extraction)
 
    BOOST_FIXTURE_TEST_CASE(basic_single_transaction_block, extraction_test_fixture)
    {
-      auto act1 = make_transfer_action( "alice"_n, "bob"_n, "0.0001 SYS"_t, "Memo!" );
-      auto act2 = make_transfer_action( "alice"_n, "bob"_n, "0.0001 SYS"_t, "Memo!" );
-      auto act3 = make_transfer_action( "alice"_n, "bob"_n, "0.0001 SYS"_t, "Memo!" );
+      auto act1 = make_transfer_action( "alice"_n, "bob"_n, "0.0001 VTM"_t, "Memo!" );
+      auto act2 = make_transfer_action( "alice"_n, "bob"_n, "0.0001 VTM"_t, "Memo!" );
+      auto act3 = make_transfer_action( "alice"_n, "bob"_n, "0.0001 VTM"_t, "Memo!" );
       auto actt1 = make_action_trace( 0, act1, "eosio.token"_n );
       auto actt2 = make_action_trace( 1, act2, "alice"_n );
       auto actt3 = make_action_trace( 2, act3, "bob"_n );
@@ -188,19 +188,19 @@ BOOST_AUTO_TEST_SUITE(block_extraction)
                         0,
                         "eosio.token"_n, "eosio.token"_n, "transfer"_n,
                         {{ "alice"_n, "active"_n }},
-                        make_transfer_data( "alice"_n, "bob"_n, "0.0001 SYS"_t, "Memo!" )
+                        make_transfer_data( "alice"_n, "bob"_n, "0.0001 VTM"_t, "Memo!" )
                      },
                      {
                         1,
                         "alice"_n, "eosio.token"_n, "transfer"_n,
                         {{ "alice"_n, "active"_n }},
-                        make_transfer_data( "alice"_n, "bob"_n, "0.0001 SYS"_t, "Memo!" )
+                        make_transfer_data( "alice"_n, "bob"_n, "0.0001 VTM"_t, "Memo!" )
                      },
                      {
                         2,
                         "bob"_n, "eosio.token"_n, "transfer"_n,
                         {{ "alice"_n, "active"_n }},
-                        make_transfer_data( "alice"_n, "bob"_n, "0.0001 SYS"_t, "Memo!" )
+                        make_transfer_data( "alice"_n, "bob"_n, "0.0001 VTM"_t, "Memo!" )
                      }
                   }
                },
@@ -220,9 +220,9 @@ BOOST_AUTO_TEST_SUITE(block_extraction)
    }
 
    BOOST_FIXTURE_TEST_CASE(basic_multi_transaction_block, extraction_test_fixture) {
-      auto act1 = make_transfer_action( "alice"_n, "bob"_n, "0.0001 SYS"_t, "Memo!" );
-      auto act2 = make_transfer_action( "bob"_n, "alice"_n, "0.0001 SYS"_t, "Memo!" );
-      auto act3 = make_transfer_action( "fred"_n, "bob"_n, "0.0001 SYS"_t, "Memo!" );
+      auto act1 = make_transfer_action( "alice"_n, "bob"_n, "0.0001 VTM"_t, "Memo!" );
+      auto act2 = make_transfer_action( "bob"_n, "alice"_n, "0.0001 VTM"_t, "Memo!" );
+      auto act3 = make_transfer_action( "fred"_n, "bob"_n, "0.0001 VTM"_t, "Memo!" );
       auto actt1 = make_action_trace( 0, act1, "eosio.token"_n );
       auto actt2 = make_action_trace( 1, act2, "bob"_n );
       auto actt3 = make_action_trace( 2, act3, "fred"_n );
@@ -270,7 +270,7 @@ BOOST_AUTO_TEST_SUITE(block_extraction)
                         0,
                         "eosio.token"_n, "eosio.token"_n, "transfer"_n,
                         {{ "alice"_n, "active"_n }},
-                        make_transfer_data( "alice"_n, "bob"_n, "0.0001 SYS"_t, "Memo!" )
+                        make_transfer_data( "alice"_n, "bob"_n, "0.0001 VTM"_t, "Memo!" )
                      }
                   }
                },
@@ -289,7 +289,7 @@ BOOST_AUTO_TEST_SUITE(block_extraction)
                         1,
                         "bob"_n, "eosio.token"_n, "transfer"_n,
                         {{ "bob"_n, "active"_n }},
-                        make_transfer_data( "bob"_n, "alice"_n, "0.0001 SYS"_t, "Memo!" )
+                        make_transfer_data( "bob"_n, "alice"_n, "0.0001 VTM"_t, "Memo!" )
                      }
                   }
                },
@@ -308,7 +308,7 @@ BOOST_AUTO_TEST_SUITE(block_extraction)
                         2,
                         "fred"_n, "eosio.token"_n, "transfer"_n,
                         {{ "fred"_n, "active"_n }},
-                        make_transfer_data( "fred"_n, "bob"_n, "0.0001 SYS"_t, "Memo!" )
+                        make_transfer_data( "fred"_n, "bob"_n, "0.0001 VTM"_t, "Memo!" )
                      }
                   }
                },
@@ -333,7 +333,7 @@ BOOST_AUTO_TEST_SUITE(block_extraction)
       auto actt1 = make_action_trace( 0, onerror_act, "eosio.token"_n );
       auto ptrx1 = make_packed_trx( { onerror_act } );
 
-      auto act2 = make_transfer_action( "bob"_n, "alice"_n, "0.0001 SYS"_t, "Memo!" );
+      auto act2 = make_transfer_action( "bob"_n, "alice"_n, "0.0001 VTM"_t, "Memo!" );
       auto actt2 = make_action_trace( 1, act2, "bob"_n );
       auto transfer_trx = make_packed_trx( { act2 } );
 

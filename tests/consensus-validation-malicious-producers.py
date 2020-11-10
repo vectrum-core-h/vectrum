@@ -181,7 +181,7 @@ def stageScenario(stagedNodeInfos):
     os.makedirs(stagingDir)
     count=0
     for stagedNodeInfo in stagedNodeInfos:
-        configPath=os.path.join(stagingDir, "etc/eosio/node_%02d" % (count))
+        configPath=os.path.join(stagingDir, "etc/vectrum/node_%02d" % (count))
         os.makedirs(configPath)
         with open(os.path.join(configPath, "config.ini"), "w") as textFile:
             print(stagedNodeInfo.config,file=textFile)
@@ -203,7 +203,7 @@ parser.add_argument("-t", "--tests", type=str, help="1|2|3 1=run no malicious pr
 parser.add_argument("-w", type=int, help="system wait time", default=testUtils.Utils.systemWaitTimeout)
 parser.add_argument("-v", help="verbose logging", action='store_true')
 parser.add_argument("--dump-error-details",
-                    help="Upon error print etc/eosio/node_*/config.ini and var/lib/node_*/stderr.log to stdout",
+                    help="Upon error print etc/vectrum/node_*/config.ini and var/lib/node_*/stderr.log to stdout",
                     action='store_true')
 parser.add_argument("--keep-logs", help="Don't delete var/lib/node_* folders upon test completion",
                     action='store_true')
@@ -217,7 +217,7 @@ waitTimeout=args.w
 dumpErrorDetails=args.dump-error-details
 keepLogs=args.keep-logs
 amINoon=not args.not_noon
-killEosInstances= not args.dont-kill
+killInstances= not args.dont-kill
 killWallet= not args.dont-kill
 
 testUtils.Utils.Debug=debug
@@ -247,7 +247,7 @@ def myTest(transWillEnterBlock):
         delay=0
         Print("Stand up cluster")
         if cluster.launch(pnodes=pnodes, totalNodes=total_nodes, topo=topo, delay=delay) is False:
-            error("Failed to stand up eos cluster.")
+            error("Failed to stand up VECTRUM cluster.")
             return False
 
         accounts=testUtils.Cluster.createAccountKeys(1)
@@ -358,7 +358,7 @@ def myTest(transWillEnterBlock):
             walletMgr.dumpErrorDetails()
             Print("== Errors see above ==")
 
-        if killEosInstances:
+        if killInstances:
             Print("Shut down the cluster%s" % (" and cleanup." if (testSuccessful and not keepLogs) else "."))
             cluster.killall()
             walletMgr.killall()

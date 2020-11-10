@@ -13,8 +13,8 @@ import math
 import re
 
 ###############################################################
-# nodeos_producer_watermark_test
-# --dump-error-details <Upon error print etc/eosio/node_*/config.ini and var/lib/node_*/stderr.log to stdout>
+# node_producer_watermark_test
+# --dump-error-details <Upon error print etc/vectrum/node_*/config.ini and var/lib/node_*/stderr.log to stdout>
 # --keep-logs <Don't delete var/lib/node_* folders upon test completion>
 ###############################################################
 def isValidBlockProducer(prodsActive, blockNum, node):
@@ -166,11 +166,11 @@ walletPort=args.wallet_port
 
 walletMgr=WalletMgr(True, port=walletPort)
 testSuccessful=False
-killEosInstances=not dontKill
+killInstances=not dontKill
 killWallet=not dontKill
 
-WalletdName=Utils.EosWalletName
-ClientName="cleos"
+WalletdName=Utils.WalletName
+CliName="vectrum-cli"
 
 try:
     assert(totalNodes == 3)
@@ -183,7 +183,7 @@ try:
     Print("Stand up cluster")
     if cluster.launch(prodCount=prodCount, onlyBios=False, pnodes=totalNodes, totalNodes=totalNodes, totalProducers=totalNodes, useBiosBootFile=False, onlySetProds=True, sharedProducers=1) is False:
         Utils.cmdError("launcher")
-        Utils.errorExit("Failed to stand up eos cluster.")
+        Utils.errorExit("Failed to stand up VECTRUM cluster.")
 
     Print("Validating system accounts after bootstrap")
     cluster.validateAccounts(None)
@@ -252,6 +252,6 @@ try:
 
     testSuccessful=True
 finally:
-    TestHelper.shutdown(cluster, walletMgr, testSuccessful=testSuccessful, killEosInstances=killEosInstances, killWallet=killWallet, keepLogs=keepLogs, cleanRun=killAll, dumpErrorDetails=dumpErrorDetails)
+    TestHelper.shutdown(cluster, walletMgr, testSuccessful=testSuccessful, killInstances=killInstances, killWallet=killWallet, keepLogs=keepLogs, cleanRun=killAll, dumpErrorDetails=dumpErrorDetails)
 
 exit(0)
