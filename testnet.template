@@ -120,7 +120,6 @@ ecmd create account eosio eosio.msig $pubsyskey $pubsyskey
 ecmd create account eosio eosio.names $pubsyskey $pubsyskey
 ecmd create account eosio eosio.ram $pubsyskey $pubsyskey
 ecmd create account eosio eosio.ramfee $pubsyskey $pubsyskey
-ecmd create account eosio eosio.rex $pubsyskey $pubsyskey
 ecmd create account eosio eosio.saving $pubsyskey $pubsyskey
 ecmd create account eosio eosio.stake $pubsyskey $pubsyskey
 ecmd create account eosio eosio.token $pubsyskey $pubsyskey

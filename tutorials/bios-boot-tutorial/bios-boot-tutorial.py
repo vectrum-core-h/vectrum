@@ -26,7 +26,6 @@ systemAccounts = [
     'eosio.stake',
     'eosio.token',
     'eosio.vpay',
-    'eosio.rex',
 ]
 
 def jsonArg(a):
