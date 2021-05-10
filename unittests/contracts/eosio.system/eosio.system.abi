@@ -364,15 +364,19 @@
                     "type": "block_timestamp_type"
                 },
                 {
-                    "name": "last_pervote_bucket_fill",
+                    "name": "last_buckets_fill",
                     "type": "time_point"
                 },
                 {
-                    "name": "pervote_bucket",
+                    "name": "bpay_bucket",
                     "type": "int64"
                 },
                 {
-                    "name": "perblock_bucket",
+                    "name": "vpay_bucket",
+                    "type": "int64"
+                },
+                {
+                    "name": "upay_bucket",
                     "type": "int64"
                 },
                 {
@@ -393,6 +397,10 @@
                 },
                 {
                     "name": "total_producer_vote_weight",
+                    "type": "float64"
+                },
+                {
+                    "name": "total_user_vote_weight",
                     "type": "float64"
                 },
                 {
@@ -914,24 +922,6 @@
             ]
         },
         {
-            "name": "setinflation",
-            "base": "",
-            "fields": [
-                {
-                    "name": "annual_rate",
-                    "type": "int64"
-                },
-                {
-                    "name": "inflation_pay_factor",
-                    "type": "int64"
-                },
-                {
-                    "name": "votepay_factor",
-                    "type": "int64"
-                }
-            ]
-        },
-        {
             "name": "setparams",
             "base": "",
             "fields": [
@@ -1284,11 +1274,6 @@
             "name": "setcode",
             "type": "setcode",
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Deploy Contract Code\nsummary: 'Deploy contract code on account {{nowrap account}}'\nicon: http://127.0.0.1/ricardian_assets/vectrum.contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\n\nDeploy compiled contract code to the account {{account}}."
-        },
-        {
-            "name": "setinflation",
-            "type": "setinflation",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Set Inflation Parameters\nsummary: 'Set inflation parameters'\nicon: http://127.0.0.1/ricardian_assets/vectrum.contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\n{{$action.account}} sets the inflation parameters as follows:\n\n* Annual inflation rate (in units of a hundredth of a percent): {{annual_rate}}\n* Fraction of inflation used to reward block producers: 10000/{{inflation_pay_factor}}\n* Fraction of block producer rewards to be distributed proportional to blocks produced: 10000/{{votepay_factor}}"
         },
         {
             "name": "setparams",

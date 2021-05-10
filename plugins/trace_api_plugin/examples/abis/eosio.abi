@@ -363,15 +363,19 @@
           "type": "block_timestamp_type"
         },
         {
-          "name": "last_pervote_bucket_fill",
+          "name": "last_buckets_fill",
           "type": "time_point"
         },
         {
-          "name": "pervote_bucket",
+          "name": "bpay_bucket",
           "type": "int64"
         },
         {
-          "name": "perblock_bucket",
+          "name": "vpay_bucket",
+          "type": "int64"
+        },
+        {
+          "name": "upay_bucket",
           "type": "int64"
         },
         {
@@ -392,6 +396,10 @@
         },
         {
           "name": "total_producer_vote_weight",
+          "type": "float64"
+        },
+        {
+          "name": "total_user_vote_weight",
           "type": "float64"
         },
         {
@@ -913,24 +921,6 @@
       ]
     },
     {
-      "name": "setinflation",
-      "base": "",
-      "fields": [
-        {
-          "name": "annual_rate",
-          "type": "int64"
-        },
-        {
-          "name": "inflation_pay_factor",
-          "type": "int64"
-        },
-        {
-          "name": "votepay_factor",
-          "type": "int64"
-        }
-      ]
-    },
-    {
       "name": "setparams",
       "base": "",
       "fields": [
@@ -1281,11 +1271,6 @@
     {
       "name": "setcode",
       "type": "setcode",
-      "ricardian_contract": ""
-    },
-    {
-      "name": "setinflation",
-      "type": "setinflation",
       "ricardian_contract": ""
     },
     {
