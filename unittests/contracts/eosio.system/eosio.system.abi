@@ -440,11 +440,11 @@
             "base": "",
             "fields": [
                 {
-                    "name": "last_vpay_state_update",
+                    "name": "last_producer_vpay_state_update",
                     "type": "time_point"
                 },
                 {
-                    "name": "total_vpay_share_change_rate",
+                    "name": "total_producer_vpay_share_change_rate",
                     "type": "float64"
                 }
             ]
@@ -1363,13 +1363,6 @@
             "key_types": []
         },
         {
-            "name": "global3",
-            "type": "eosio_global_state3",
-            "index_type": "i64",
-            "key_names": [],
-            "key_types": []
-        },
-        {
             "name": "global4",
             "type": "eosio_global_state4",
             "index_type": "i64",
@@ -1386,13 +1379,6 @@
         {
             "name": "producers",
             "type": "producer_info",
-            "index_type": "i64",
-            "key_names": [],
-            "key_types": []
-        },
-        {
-            "name": "producers2",
-            "type": "producer_info2",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

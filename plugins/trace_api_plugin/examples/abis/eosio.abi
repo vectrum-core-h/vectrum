@@ -439,11 +439,11 @@
       "base": "",
       "fields": [
         {
-          "name": "last_vpay_state_update",
+          "name": "last_producer_vpay_state_update",
           "type": "time_point"
         },
         {
-          "name": "total_vpay_share_change_rate",
+          "name": "total_producer_vpay_share_change_rate",
           "type": "float64"
         }
       ]
@@ -1361,13 +1361,6 @@
       "type": "eosio_global_state2"
     },
     {
-      "name": "global3",
-      "index_type": "i64",
-      "key_names": [],
-      "key_types": [],
-      "type": "eosio_global_state3"
-    },
-    {
       "name": "global4",
       "index_type": "i64",
       "key_names": [],
@@ -1387,13 +1380,6 @@
       "key_names": [],
       "key_types": [],
       "type": "producer_info"
-    },
-    {
-      "name": "producers2",
-      "index_type": "i64",
-      "key_names": [],
-      "key_types": [],
-      "type": "producer_info2"
     },
     {
       "name": "rammarket",
