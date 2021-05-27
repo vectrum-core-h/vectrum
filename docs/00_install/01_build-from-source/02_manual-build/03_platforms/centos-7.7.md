@@ -58,7 +58,7 @@ cd $VECTRUM_INSTALL_LOCATION && curl -LO https://cmake.org/files/v3.13/cmake-3.1
 # apply clang patch
 cp -f $VECTRUM_LOCATION/scripts/clang-devtoolset8-support.patch /tmp/clang-devtoolset8-support.patch
 # build boost
-cd $VECTRUM_INSTALL_LOCATION && curl -LO https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.bz2 && \
+cd $VECTRUM_INSTALL_LOCATION && curl -OL https://boostorg.jfrog.io/artifactory/main/release/1.71.0/source/boost_1_71_0.tar.bz2 && \
     source /opt/rh/devtoolset-8/enable && \
     tar -xjf boost_1_71_0.tar.bz2 && \
     cd boost_1_71_0 && \
