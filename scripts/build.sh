@@ -31,6 +31,7 @@ SCRIPT_VERSION=3.1 # Build script version (change this to re-build the CICD imag
 #
 # https://github.com/EOSIO/eos/blob/master/LICENSE
 ##########################################################################
+ENABLE_MONGO=true
 
 function usage() {
    printf "Usage: $0 OPTION...
